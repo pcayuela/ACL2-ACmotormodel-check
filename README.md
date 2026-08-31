@@ -26,13 +26,13 @@ every algebraic step of those derivations that is actually algebra
 
 | File | Paper section / eqs. | Result |
 |---|---|---|
-| `00-complejos-vectores.lisp` | §III.A, eqs. (6)–(9) | Complex-product ↔ dot-product and cross-product correspondence |
-| `01-euler-trig.lisp` | §III.A, eqs. (10), (12) | Euler's formula and its relation to the dot product |
-| `02-raices-unidad.lisp` | eqs. used in (16)–(28), (33)–(35) | The two cube-root-of-unity sums that make the collapse lemma work |
-| `03-deduccion-zeta.lisp` | §III.C, eqs. (16)–(28) | Algebraic core of the ζₖ(t) deduction (real/imag parts, magnitude²) |
-| `04-lema-colapso.lisp` | §III.H, eqs. (33)–(35) | The three-phase "collapse lemma", in full generality, plus the mutual-term phase-shift identity |
-| `05-correccion-signo-torque.lisp` | §III.K, eqs. (40)–(46) | **`torque-exponent-sign-is-plus`** — the algebraic chain confirming the `+ε(t)` sign correction |
-| `06-inductancias-nota.lisp` | §III.F, eqs. (29)–(31) | *Not* mechanized — see below |
+| `00-complex-vectors.lisp` | §III.A, eqs. (6)–(9) | Complex-product ↔ dot-product and cross-product correspondence |
+| `01-euler-identities.lisp` | §III.A, eqs. (10), (12) | Euler's formula and its relation to the dot product |
+| `02-roots-of-unity.lisp` | eqs. used in (16)–(28), (33)–(35) | The two cube-root-of-unity sums that make the collapse lemma work |
+| `03-zeta-deduction.lisp` | §III.C, eqs. (16)–(28) | Algebraic core of the ζₖ(t) deduction (real/imag parts, magnitude²) |
+| `04-collapse-lemma.lisp` | §III.H, eqs. (33)–(35) | The three-phase "collapse lemma", in full generality, plus the mutual-term phase-shift identity |
+| `05-torque-sign-correction.lisp` | §III.K, eqs. (40)–(46) | **`torque-exponent-sign-is-plus`** — the algebraic chain confirming the `+ε(t)` sign correction |
+| `06-inductance-note.lisp` | §III.F, eqs. (29)–(31) | *Not* mechanized — see below |
 | `top.lisp` | — | Includes all of the above; certifying it certifies the whole chain from scratch |
 
 ## Honesty boundary — what this does *not* prove
@@ -41,18 +41,19 @@ ACL2 has no built-in theory of transcendental functions, real
 analysis, or symbolic calculus. To stay honest about that:
 
 - **Trigonometric facts** (Pythagorean identity, angle-difference
-  formulas) are introduced in `01-euler-trig.lisp` via `encapsulate`
-  as explicitly *assumed* constraints on abstract `cosine`/`sine`
-  functions, not derived from first principles. Every theorem that
-  depends on them should be read as "for any pair of functions
-  satisfying these standard properties of sine and cosine...".
+  formulas) are introduced in `01-euler-identities.lisp` via
+  `encapsulate` as explicitly *assumed* constraints on abstract
+  `cosine`/`sine` functions, not derived from first principles. Every
+  theorem that depends on them should be read as "for any pair of
+  functions satisfying these standard properties of sine and
+  cosine...".
 - **`sqrt(3)`** is irrational, so it cannot be an ACL2 `encapsulate`
   witness. It is instead a universally-quantified free variable `s3`
   with the hypothesis `s3*s3 = 3` in every theorem that uses it.
 - **Section III.F (self/mutual inductance)** requires evaluating
   genuine definite integrals over `[0, 2π]`. ACL2 cannot do symbolic
   integration, so this section is deliberately **not** mechanized —
-  see `06-inductancias-nota.lisp` for what *is* mechanizable there
+  see `06-inductance-note.lisp` for what *is* mechanizable there
   (the trig product-to-sum step) and what isn't.
 - Equation (40) — the torque formula as stated in Leonhard's book — is
   taken as a *given* starting point (as the paper itself does); this

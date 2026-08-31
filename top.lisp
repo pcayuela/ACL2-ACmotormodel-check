@@ -1,21 +1,20 @@
 ; top.lisp
 ;
-; Incluye, en orden de dependencia, todos los libros de esta
-; verificacion. Certificar este libro certifica (transitivamente)
-; todos los demas y confirma que la cadena completa carga sin
-; errores desde cero.
+; Includes, in dependency order, every book in this verification.
+; Certifying this book certifies (transitively) all the others and
+; confirms the whole chain loads with no errors from a clean state.
 ;
 ;   cert.pl top
 ;
-; Requiere ACL2 con los community-books estandar disponibles
-; (usa arithmetic-5/top :dir :system).
+; Requires ACL2 with the standard community books available (uses
+; arithmetic-5/top :dir :system).
 
 (in-package "ACL2")
 
-(include-book "00-complejos-vectores")
-(include-book "01-euler-trig")
-(include-book "02-raices-unidad")
-(include-book "03-deduccion-zeta")
-(include-book "04-lema-colapso")
-(include-book "05-correccion-signo-torque")
-(include-book "06-inductancias-nota")
+(include-book "00-complex-vectors")
+(include-book "01-euler-identities")
+(include-book "02-roots-of-unity")
+(include-book "03-zeta-deduction")
+(include-book "04-collapse-lemma")
+(include-book "05-torque-sign-correction")
+(include-book "06-inductance-note")
