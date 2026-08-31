@@ -1,0 +1,11 @@
+*.cert
+*.cert.out
+*.fasl
+*.port
+*.lx64fsl
+*.dx64fsl
+*.o
+*.pdb
+Makefile-tmp*
+.certdep
+workxxx*
