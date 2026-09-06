@@ -17,4 +17,5 @@
 (include-book "03-zeta-deduction")
 (include-book "04-collapse-lemma")
 (include-book "05-torque-sign-correction")
-(include-book "06-inductance-note")
+(include-book "06-generic-omega-collapse")
+(include-book "07-inductance-note")
