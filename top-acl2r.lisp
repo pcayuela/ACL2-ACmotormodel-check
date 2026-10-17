@@ -16,6 +16,8 @@
 ; Each book below is self-contained (neither includes the other, nor
 ; the plain-ACL2 chain), since they are independent pieces of work.
 
+; cert_param: (uses-acl2r)
+
 (in-package "ACL2")
 
 (include-book "06-generic-omega-collapse-acl2r")

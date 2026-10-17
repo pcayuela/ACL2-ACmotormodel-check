@@ -10,6 +10,8 @@
 ;
 ;   ACL2=/path/to/saved_acl2r cert.pl --acl2 "$ACL2" top-acl2r-nonvacuity
 
+; cert_param: (uses-acl2r)
+
 (in-package "ACL2")
 
 (include-book "09-nonvacuity-acl2r")

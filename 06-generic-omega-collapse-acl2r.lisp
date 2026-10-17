@@ -19,6 +19,8 @@
 ;
 ; Certify with: ACL2=/path/to/saved_acl2r cert.pl --acl2 "$ACL2" top-acl2r
 
+; cert_param: (uses-acl2r)
+
 (in-package "ACL2")
 (include-book "nonstd/nsa/trig" :dir :system)
 (include-book "arithmetic-5/top" :dir :system)

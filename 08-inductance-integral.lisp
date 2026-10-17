@@ -56,6 +56,8 @@
 ; instantiating ftc-2 itself, is left for a follow-up session; nothing
 ; below asserts or simulates that missing step.
 
+; cert_param: (uses-acl2r)
+
 (in-package "ACL2")
 (include-book "arithmetic-5/top" :dir :system)
 (include-book "nonstd/nsa/trig" :dir :system)
