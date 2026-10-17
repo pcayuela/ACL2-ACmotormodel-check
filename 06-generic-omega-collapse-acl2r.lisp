@@ -23,29 +23,56 @@
 (include-book "nonstd/nsa/trig" :dir :system)
 (include-book "arithmetic-5/top" :dir :system)
 
-(defun re (u) (car u))
-(defun im (u) (cdr u))
-(defun cplx (a b) (cons a b))
+; Guards: CPLXP (both components ACL2 numbers) is the domain of the pair
+; algebra; RE/IM only need a cons so REALPAIRP can apply to any object.
+(defun cplxp (u)
+  (declare (xargs :guard t))
+  (and (consp u) (acl2-numberp (car u)) (acl2-numberp (cdr u))))
+(defun re (u) (declare (xargs :guard (consp u))) (car u))
+(defun im (u) (declare (xargs :guard (consp u))) (cdr u))
+(defun cplx (a b)
+  (declare (xargs :guard (and (acl2-numberp a) (acl2-numberp b))))
+  (cons a b))
 
 (defun realpairp (u)
+  (declare (xargs :guard t))
   (and (consp u) (realp (re u)) (realp (im u))))
 
-(defun c+ (u v) (cplx (+ (re u) (re v)) (+ (im u) (im v))))
-(defun c- (u v) (cplx (- (re u) (re v)) (- (im u) (im v))))
-(defun cscale (k u) (cplx (* k (re u)) (* k (im u))))
+(defun c+ (u v)
+  (declare (xargs :guard (and (cplxp u) (cplxp v))))
+  (cplx (+ (re u) (re v)) (+ (im u) (im v))))
+(defun c- (u v)
+  (declare (xargs :guard (and (cplxp u) (cplxp v))))
+  (cplx (- (re u) (re v)) (- (im u) (im v))))
+(defun cscale (k u)
+  (declare (xargs :guard (and (acl2-numberp k) (cplxp u))))
+  (cplx (* k (re u)) (* k (im u))))
 
 (defun c* (u v)
+  (declare (xargs :guard (and (cplxp u) (cplxp v))))
   (cplx (- (* (re u) (re v)) (* (im u) (im v)))
         (+ (* (re u) (im v)) (* (im u) (re v)))))
 
-(defun vdot (u v) (+ (* (re u) (re v)) (* (im u) (im v))))
+(defun vdot (u v)
+  (declare (xargs :guard (and (cplxp u) (cplxp v))))
+  (+ (* (re u) (re v)) (* (im u) (im v))))
 
 ; --- The generic collapse lemma, ported to realp (identical in
 ; structure to 06-generic-omega-collapse.lisp's rationalp version).
+; Guards of OMEGA-POW are verified in a second step: the recursive call's
+; guard needs the result to be a CPLXP, proved by induction first.
 (defun omega-pow (omega n)
+  (declare (xargs :guard (and (cplxp omega) (natp n))
+                  :verify-guards nil))
   (if (zp n) (cplx 1 0) (c* omega (omega-pow omega (1- n)))))
 
+(defthm cplxp-of-omega-pow
+  (implies (cplxp omega) (cplxp (omega-pow omega n))))
+
+(verify-guards omega-pow)
+
 (defun collapse-sum (A omega)
+  (declare (xargs :guard (and (cplxp A) (cplxp omega))))
   (c+ (cscale (* 2/3 (vdot A (omega-pow omega 0))) (omega-pow omega 0))
       (c+ (cscale (* 2/3 (vdot A (omega-pow omega 1))) (omega-pow omega 1))
           (cscale (* 2/3 (vdot A (omega-pow omega 2))) (omega-pow omega 2)))))
@@ -107,6 +134,10 @@
   :hints (("Goal" :use ((:instance expt-2-is-times (x (acl2-sqrt 3)))
                         sqrt-3-squared))))
 
+; GUARDS NOT VERIFIABLE for the functions below that call ACL2-PI /
+; ACL2-SINE / ACL2-COSINE / ACL2-SQRT: those library functions (nonstd/
+; nsa/trig) have unverified guards, and ACL2 refuses to verify guards of
+; any function whose body calls one.
 (defun gamma-val () (+ (* 1/3 (acl2-pi)) (* 1/3 (acl2-pi))))
 
 (defthm cos-gamma-val

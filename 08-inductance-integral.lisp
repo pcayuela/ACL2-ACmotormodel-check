@@ -62,6 +62,13 @@
 (include-book "nonstd/workshops/2011/reid-gamboa-differentiator/support/exp-minimal" :dir :system)
 (include-book "nonstd/workshops/2011/reid-gamboa-differentiator/support/differentiator" :dir :system)
 
+; GUARDS NOT VERIFIABLE: the functions below call ACL2-PI / ACL2-SINE /
+; ACL2-COSINE from nonstd/nsa/trig, whose own guards are unverified in
+; the library (they are defined through ACL2(r)'s standard-part
+; machinery), and ACL2 refuses to verify the guards of any function
+; whose body calls one. They are logical (non-executable) definitions
+; used only in proofs.
+
 ; gamma = 2*pi/3, the stator/rotor winding spacing of Section 2.
 (defun winding-gamma () (* 2/3 (acl2-pi)))
 
