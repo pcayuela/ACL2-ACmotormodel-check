@@ -22,6 +22,7 @@
 
 ; W = i_S * conj(i_R * E),  E = e^{j eps}  =>  W = i_S i_R* e^{-j eps}
 (defun torque-W (i-s i-r eps)
+  (declare (xargs :guard (and (cplxp i-s) (cplxp i-r))))
   (cmul i-s (cconj (cmul i-r (eiz eps)))))
 
 ; --- W* = i_S* i_R e^{+j eps}  (given explicitly in the paper) ---

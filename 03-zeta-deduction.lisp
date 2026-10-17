@@ -13,6 +13,8 @@
 (include-book "02-roots-of-unity")
 
 (defun ik (i0 i1 i2 s3)
+  (declare (xargs :guard (and (acl2-numberp i0) (acl2-numberp i1)
+                              (acl2-numberp i2) (acl2-numberp s3))))
   (cadd (cscale i0 (e0)) (cadd (cscale i1 (e1 s3)) (cscale i2 (e2 s3)))))
 
 ; --- Real part of (16), after applying the current balance (13) ---

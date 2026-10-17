@@ -19,9 +19,13 @@
 (in-package "ACL2")
 (include-book "00-complex-vectors")
 
-(defun e0 () (cplx 1 0))
-(defun e1 (s3) (cplx (- (/ 1 2)) (/ s3 2)))
-(defun e2 (s3) (cplx (- (/ 1 2)) (- (/ s3 2))))
+(defun e0 () (declare (xargs :guard t)) (cplx 1 0))
+(defun e1 (s3)
+  (declare (xargs :guard (acl2-numberp s3)))
+  (cplx (- (/ 1 2)) (/ s3 2)))
+(defun e2 (s3)
+  (declare (xargs :guard (acl2-numberp s3)))
+  (cplx (- (/ 1 2)) (- (/ s3 2))))
 
 ; --- Image 20: 1 + e^{j gamma} + e^{j 2 gamma} = 0 ---
 (defthm eq-roots-of-unity-sum-zero

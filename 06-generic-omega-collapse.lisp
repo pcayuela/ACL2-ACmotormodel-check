@@ -33,6 +33,7 @@
 (include-book "00-complex-vectors")
 
 (defun realpairp (u)
+  (declare (xargs :guard t))
   (and (consp u) (rationalp (re u)) (rationalp (imz u))))
 
 ; --- No zero divisors for rational pairs under cmul, established via
@@ -123,10 +124,21 @@
 
 ; --- The generic collapse lemma: for any omega satisfying its minimal
 ; polynomial, sum_{n=0}^{2} (2/3)(A . omega^n) omega^n = A.
+; Guards are verified in a second step: the recursive call's guard
+; needs OMEGA-POW to return a CPLXP, which is itself proved by
+; induction over the (still unverified-guard) definition.
 (defun omega-pow (omega n)
+  (declare (xargs :guard (and (cplxp omega) (natp n))
+                  :verify-guards nil))
   (if (zp n) (cplx 1 0) (cmul omega (omega-pow omega (1- n)))))
 
+(defthm cplxp-of-omega-pow
+  (implies (cplxp omega) (cplxp (omega-pow omega n))))
+
+(verify-guards omega-pow)
+
 (defun collapse-sum (A omega)
+  (declare (xargs :guard (and (cplxp A) (cplxp omega))))
   (cadd (cscale (* 2/3 (dotp A (omega-pow omega 0))) (omega-pow omega 0))
       (cadd (cscale (* 2/3 (dotp A (omega-pow omega 1))) (omega-pow omega 1))
           (cscale (* 2/3 (dotp A (omega-pow omega 2))) (omega-pow omega 2)))))

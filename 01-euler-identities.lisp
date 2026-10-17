@@ -41,7 +41,9 @@
  (defthm acl2-numberp-sine (acl2-numberp (sine x))))
 
 ; e^{j theta} := cplx(cos theta, sin theta)
-(defun eiz (theta) (cplx (cosine theta) (sine theta)))
+(defun eiz (theta)
+  (declare (xargs :guard t))
+  (cplx (cosine theta) (sine theta)))
 
 ; --- Equation (10): cos(delta) = (e^{j delta} + e^{-j delta}) / 2 ---
 (defthm eq10-euler-cosine
