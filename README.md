@@ -38,8 +38,10 @@ calculus.
 | `06-generic-omega-collapse-acl2r.lisp` | §III.H (independent, more general route) | Discharges that condition: constructs the real ω=e^{j2π/3} in ACL2(r) and makes the generic lemma unconditional |
 | `07-inductance-note.lisp` | §III.F, eqs. (29)–(31) | *Not* mechanized here — see below |
 | `08-inductance-integral.lisp` | §III.F, eqs. (29)–(31) | Follow-up ACL2(r) attempt: confirms the antiderivative's trigonometric algebra and machine-derives the raw derivative of its oscillating term; does **not** complete the integral — see the file header for exactly where it stops |
+| `09-nonvacuity-acl2r.lisp` | §3.3 caveat | ACL2(r)-only: shows the `s3*s3=3` hypothesis is satisfiable (`s3 = (acl2-sqrt 3)`), instantiates the theorems of `03`–`05` at it with no hypothesis on `s3`, and proves the constraints of `01`'s `encapsulate` for `acl2-cosine`/`acl2-sine` |
 | `top.lisp` | — | Includes `00`–`07`; certifying it certifies that chain from scratch |
 | `top-acl2r.lisp` | — | Includes the two ACL2(r)-only books (`06-...-acl2r`, `08-...`); certifying it certifies that chain from scratch |
+| `top-acl2r-nonvacuity.lisp` | — | Includes `09` (and hence `00`–`05`, which must be certified with the ACL2(r) executable); a separate top because `06-...-acl2r` re-declares the names of `00`–`05` |
 
 **On `06-generic-omega-collapse{,-acl2r}.lisp`:** these are *not* a
 dependency of `04-collapse-lemma.lisp`'s result — that book already
@@ -67,8 +69,12 @@ only where explicitly invoked below). To stay honest about that:
 - **`sqrt(3)`** is irrational, so it cannot be a plain-ACL2
   `encapsulate` witness. In `00`–`07` it is left as a
   universally-quantified free variable `s3` with the hypothesis
-  `s3*s3 = 3`. In the ACL2(r)-only books it is instead the genuine
-  `(acl2-sqrt 3)`.
+  `s3*s3 = 3`; in plain ACL2 no number satisfies it, so those theorems are
+  schematic there. Their numeric hypotheses use `real/rationalp`
+  (`rationalp` in plain ACL2, `realp` in ACL2(r)) rather than
+  `rationalp`, which would exclude sqrt(3) even in ACL2(r). In the
+  ACL2(r)-only books it is instead the genuine `(acl2-sqrt 3)`;
+  `09-nonvacuity-acl2r.lisp` instantiates the theorems of `03`–`05` at it.
 - **The generic collapse lemma** (`06-generic-omega-collapse.lisp`) is
   conditional in plain ACL2 for the same reason: no rational pair
   satisfies ω²+ω+1=0. `06-generic-omega-collapse-acl2r.lisp` closes

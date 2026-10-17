@@ -11,9 +11,11 @@
 (include-book "02-roots-of-unity")
 (include-book "01-euler-identities")
 
-; --- Collapse lemma (images 56-60), general version for A=(ra,ia) ---
+; --- Collapse lemma (images 56-60), general version for A=(ra,ia).
+;     REAL/RATIONALP (not RATIONALP) so that the hypotheses are satisfiable in
+;     ACL2(r) by s3 = sqrt(3); in plain ACL2 REAL/RATIONALP = RATIONALP. ---
 (defthm eq33-35-three-phase-collapse-lemma
-  (implies (and (rationalp ra) (rationalp ia) (rationalp s3)
+  (implies (and (real/rationalp ra) (real/rationalp ia) (real/rationalp s3)
                 (equal (* s3 s3) 3))
            (equal (cadd (cscale (* 2/3 (dotp (cplx ra ia) (e0))) (e0))
                   (cadd (cscale (* 2/3 (dotp (cplx ra ia) (e1 s3))) (e1 s3))

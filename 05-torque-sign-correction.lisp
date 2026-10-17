@@ -60,9 +60,10 @@
 ;     the exponent -eps instead of +eps changes the result. e1(s3) =
 ;     e^{j gamma} stands in for "+eps" and its conjugate e2(s3) =
 ;     e^{-j gamma} for the alternative "-eps", with i_S=(1,1),
-;     i_R=(1,0). ---
+;     i_R=(1,0).
+;     REAL/RATIONALP (not RATIONALP): satisfiable in ACL2(r) by s3 = sqrt(3). ---
 (defthm sign-matters-nonvacuous
-  (implies (and (rationalp s3) (equal (* s3 s3) 3))
+  (implies (and (real/rationalp s3) (equal (* s3 s3) 3))
            (not (equal (crossp (cplx 1 1) (cmul (cplx 1 0) (e1 s3)))
                        (crossp (cplx 1 1) (cmul (cplx 1 0) (e2 s3))))))
   :hints (("Goal" :nonlinearp t)))

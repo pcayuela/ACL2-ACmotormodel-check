@@ -28,10 +28,12 @@
 
 ; --- Squared-magnitude formula that feeds the paper's i_k(t)
 ;     magnitude equation (dividing by sin/cos and summing squares).
-;     Requires s3^2=3 and rational currents/s3 so ACL2's nonlinear
-;     arithmetic can close the goal. ---
+;     Requires s3^2=3 and real currents/s3 so ACL2's nonlinear
+;     arithmetic can close the goal. REAL/RATIONALP (not RATIONALP) so that
+;     the hypotheses are satisfiable in ACL2(r) by s3 = sqrt(3); in
+;     plain ACL2 REAL/RATIONALP is RATIONALP and in ACL2(r) it is REALP. ---
 (defthm eq-ik-magnitude-squared
-  (implies (and (rationalp i0) (rationalp i1) (rationalp i2) (rationalp s3)
+  (implies (and (real/rationalp i0) (real/rationalp i1) (real/rationalp i2) (real/rationalp s3)
                 (equal i0 (- (+ i1 i2)))
                 (equal (* s3 s3) 3))
            (equal (+ (* (re (ik i0 i1 i2 s3)) (re (ik i0 i1 i2 s3)))
