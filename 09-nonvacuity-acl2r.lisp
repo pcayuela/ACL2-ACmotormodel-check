@@ -7,9 +7,10 @@
 ;   1. proves that (acl2-sqrt 3) is real and has square 3, and
 ;   2. instantiates the theorems of books 03-05 at s3 = (acl2-sqrt 3),
 ;      obtaining the same statements with NO hypothesis on s3, and
-;   3. proves the five constraints of the ENCAPSULATE of
+;   3. proves the seven constraints of the ENCAPSULATE of
 ;      01-euler-identities.lisp for the library's genuinely defined
-;      ACL2-COSINE / ACL2-SINE.
+;      ACL2-COSINE / ACL2-SINE and, by functional instantiation, that
+;      the theorems of books 01-05 that mention COSINE/SINE hold for them.
 
 (in-package "ACL2")
 (include-book "nonstd/nsa/trig" :dir :system)
@@ -64,44 +65,92 @@
                                    (s3 (acl2-sqrt 3)))
                         sqrt-3-squared-nv realp-sqrt-3))))
 
-; --- The constraints of the ENCAPSULATE in 01-euler-identities.lisp
-;     (Pythagorean identity, parity, angle-difference formulas) are
-;     theorems about the library's ACL2-COSINE / ACL2-SINE, so the
-;     abstract COSINE / SINE of books 01-05 can be instantiated with
-;     them. Stated for ACL2 numbers (the domain of interest). ---
+; --- The seven constraints of the ENCAPSULATE in 01-euler-identities.lisp
+;     (two type facts, Pythagorean identity, parity, angle-difference
+;     formulas) hold, with no hypotheses, for the library's genuinely
+;     defined ACL2-COSINE / ACL2-SINE. By functional instantiation, the
+;     theorems of books 01-05 that mention the abstract COSINE / SINE
+;     therefore hold for ACL2-COSINE / ACL2-SINE. ---
+(defthm acl2-trig-numberp-cosine (acl2-numberp (acl2-cosine x)))
+(defthm acl2-trig-numberp-sine (acl2-numberp (acl2-sine x)))
+
 (defthm acl2-trig-pythagorean
-  (implies (acl2-numberp x)
-           (equal (+ (* (acl2-cosine x) (acl2-cosine x))
-                     (* (acl2-sine x) (acl2-sine x)))
-                  1))
+  (equal (+ (* (acl2-cosine x) (acl2-cosine x))
+            (* (acl2-sine x) (acl2-sine x)))
+         1)
   :hints (("Goal" :use ((:instance cosine-of-sums (x x) (y (- x)))
                         (:instance cos-uminus (x x))
                         (:instance sin-uminus (x x))))))
 
 (defthm acl2-trig-cosine-even
-  (implies (acl2-numberp x)
-           (equal (acl2-cosine (- x)) (acl2-cosine x)))
-  :hints (("Goal" :use cos-uminus)))
+  (equal (acl2-cosine (- x)) (acl2-cosine x)))
 
 (defthm acl2-trig-sine-odd
-  (implies (acl2-numberp x)
-           (equal (acl2-sine (- x)) (- (acl2-sine x))))
-  :hints (("Goal" :use sin-uminus)))
+  (equal (acl2-sine (- x)) (- (acl2-sine x))))
 
 (defthm acl2-trig-cosine-difference
-  (implies (and (acl2-numberp x) (acl2-numberp y))
-           (equal (acl2-cosine (- x y))
-                  (+ (* (acl2-cosine x) (acl2-cosine y))
-                     (* (acl2-sine x) (acl2-sine y)))))
-  :hints (("Goal" :use ((:instance cosine-of-sums (x x) (y (- y)))
-                        (:instance cos-uminus (x y))
-                        (:instance sin-uminus (x y))))))
+  (equal (acl2-cosine (- x y))
+         (+ (* (acl2-cosine x) (acl2-cosine y))
+            (* (acl2-sine x) (acl2-sine y)))))
 
 (defthm acl2-trig-sine-difference
-  (implies (and (acl2-numberp x) (acl2-numberp y))
-           (equal (acl2-sine (- x y))
-                  (- (* (acl2-sine x) (acl2-cosine y))
-                     (* (acl2-cosine x) (acl2-sine y)))))
-  :hints (("Goal" :use ((:instance sine-of-sums (x x) (y (- y)))
-                        (:instance cos-uminus (x y))
-                        (:instance sin-uminus (x y))))))
+  (equal (acl2-sine (- x y))
+         (- (* (acl2-sine x) (acl2-cosine y))
+            (* (acl2-cosine x) (acl2-sine y)))))
+
+; e^{j theta} and the torque function over the library's functions.
+; Guards are not verified: the guards of ACL2-COSINE/ACL2-SINE are not.
+(defun eiz-r (theta)
+  (declare (xargs :guard t :verify-guards nil))
+  (cplx (acl2-cosine theta) (acl2-sine theta)))
+
+(defun torque-w-r (i-s i-r eps)
+  (declare (xargs :guard (and (cplxp i-s) (cplxp i-r)) :verify-guards nil))
+  (cmul i-s (cconj (cmul i-r (eiz-r eps)))))
+
+(defthm eq10-euler-cosine-r
+  (implies (acl2-numberp delta)
+           (equal (* 1/2 (+ (re (eiz-r delta)) (re (eiz-r (- delta)))))
+                  (acl2-cosine delta)))
+  :hints (("Goal" :by (:functional-instance eq10-euler-cosine
+                       (cosine acl2-cosine) (sine acl2-sine)
+                       (eiz eiz-r)))))
+
+(defthm eq12-cosine-difference-is-dotp-r
+  (implies (and (acl2-numberp delta) (acl2-numberp gamma))
+           (equal (dotp (eiz-r delta) (eiz-r gamma))
+                  (acl2-cosine (- delta gamma))))
+  :hints (("Goal" :by (:functional-instance eq12-cosine-difference-is-dotp
+                       (cosine acl2-cosine) (sine acl2-sine)
+                       (eiz eiz-r)))))
+
+(defthm eq-mutual-phase-shift-r
+  (implies (and (real/rationalp p) (real/rationalp q)
+                (acl2-numberp x) (acl2-numberp phi))
+           (equal (dotp (cplx p q) (eiz-r (- x phi)))
+                  (dotp (cmul (cplx p q) (eiz-r phi)) (eiz-r x))))
+  :hints (("Goal" :by (:functional-instance eq-mutual-phase-shift
+                       (cosine acl2-cosine) (sine acl2-sine)
+                       (eiz eiz-r)))))
+
+(defthm eq-W-conjugate-r
+  (equal (cconj (torque-w-r i-s i-r eps))
+         (cmul (cconj i-s) (cmul i-r (eiz-r eps))))
+  :hints (("Goal" :by (:functional-instance eq-W-conjugate
+                       (cosine acl2-cosine) (sine acl2-sine)
+                       (eiz eiz-r) (torque-w torque-w-r)))))
+
+(defthm eq-im-w-is-crossp-r
+  (equal (imz (torque-w-r i-s i-r eps))
+         (crossp i-s (cmul i-r (eiz-r eps))))
+  :hints (("Goal" :by (:functional-instance eq-im-w-is-crossp
+                       (cosine acl2-cosine) (sine acl2-sine)
+                       (eiz eiz-r) (torque-w torque-w-r)))))
+
+(defthm torque-exponent-sign-is-plus-r
+  (equal (imz (torque-w-r i-s i-r eps))
+         (crossp i-s (cmul i-r (eiz-r eps))))
+  :rule-classes nil
+  :hints (("Goal" :by (:functional-instance torque-exponent-sign-is-plus
+                       (cosine acl2-cosine) (sine acl2-sine)
+                       (eiz eiz-r) (torque-w torque-w-r)))))

@@ -38,7 +38,7 @@ calculus.
 | `06-generic-omega-collapse-acl2r.lisp` | §III.H (independent, more general route) | Discharges that condition: constructs the real ω=e^{j2π/3} in ACL2(r) and makes the generic lemma unconditional |
 | `07-inductance-note.lisp` | §III.F, eqs. (29)–(31) | *Not* mechanized here — see below |
 | `08-inductance-integral.lisp` | §III.F, eqs. (29)–(31) | Follow-up ACL2(r) attempt: confirms the antiderivative's trigonometric algebra and machine-derives the raw derivative of its oscillating term; does **not** complete the integral — see the file header for exactly where it stops |
-| `09-nonvacuity-acl2r.lisp` | §3.3 caveat | ACL2(r)-only: shows the `s3*s3=3` hypothesis is satisfiable (`s3 = (acl2-sqrt 3)`), instantiates the theorems of `03`–`05` at it with no hypothesis on `s3`, and proves the constraints of `01`'s `encapsulate` for `acl2-cosine`/`acl2-sine` |
+| `09-nonvacuity-acl2r.lisp` | §3.3 caveat | ACL2(r)-only: shows the `s3*s3=3` hypothesis is satisfiable (`s3 = (acl2-sqrt 3)`), instantiates the theorems of `03`–`05` at it with no hypothesis on `s3`, and proves the constraints of `01`'s `encapsulate` for `acl2-cosine`/`acl2-sine` and, by functional instantiation, that the theorems of `01`–`05` mentioning `cosine`/`sine` hold for them |
 | `top.lisp` | — | Includes `00`–`07`; certifying it certifies that chain from scratch |
 | `top-acl2r.lisp` | — | Includes the two ACL2(r)-only books (`06-...-acl2r`, `08-...`); certifying it certifies that chain from scratch |
 | `top-acl2r-nonvacuity.lisp` | — | Includes `09` (and hence `00`–`05`, which must be certified with the ACL2(r) executable); a separate top because `06-...-acl2r` re-declares the names of `00`–`05` |

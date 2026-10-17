@@ -32,7 +32,7 @@
 ;     the same combination cos(n gamma)[p cos(phi)-q sin(phi)] +
 ;     sin(n gamma)[p sin(phi)+q cos(phi)]). ---
 (defthm eq-mutual-phase-shift
-  (implies (and (rationalp p) (rationalp q)
+  (implies (and (real/rationalp p) (real/rationalp q)
                 (acl2-numberp x) (acl2-numberp phi))
            (equal (dotp (cplx p q) (eiz (- x phi)))
                   (dotp (cmul (cplx p q) (eiz phi)) (eiz x))))
