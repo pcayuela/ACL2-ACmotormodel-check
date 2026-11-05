@@ -39,9 +39,11 @@ calculus.
 | `07-inductance-note.lisp` | §III.F, eqs. (29)–(31) | *Not* mechanized here — see below |
 | `08-inductance-integral.lisp` | §III.F, eqs. (29)–(31) | Follow-up ACL2(r) attempt: confirms the antiderivative's trigonometric algebra and machine-derives the raw derivative of its oscillating term; does **not** complete the integral — see the file header for exactly where it stops |
 | `09-nonvacuity-acl2r.lisp` | §3.3 caveat | ACL2(r)-only: shows the `s3*s3=3` hypothesis is satisfiable (`s3 = (acl2-sqrt 3)`), instantiates the theorems of `03`–`05` at it with no hypothesis on `s3`, and proves the constraints of `01`'s `encapsulate` for `acl2-cosine`/`acl2-sine` and, by functional instantiation, that the theorems of `01`–`05` mentioning `cosine`/`sine` hold for them |
+| `10-inductance-ftc2.lisp` | §III.F, eqs. (29)–(31) | ACL2(r)-only: completes the integral that `08` left open. Obtains the derivative of the antiderivative with `acl2-sine`/`acl2-cosine` through the Reid-Gamboa differentiator (`sin-cos-minimal`), instantiates `nonstd/integrals/ftc-2`, and proves `inductance-integral-value`: ∫₀^{2π} cos(δ−mγ)cos(δ−nγ) dδ = π·cos((n−m)γ), γ = 2π/3, for standard real `m`, `n` (encapsulated constants) |
 | `top.lisp` | — | Includes `00`–`07`; certifying it certifies that chain from scratch |
 | `top-acl2r.lisp` | — | Includes the two ACL2(r)-only books (`06-...-acl2r`, `08-...`); certifying it certifies that chain from scratch |
 | `top-acl2r-nonvacuity.lisp` | — | Includes `09` (and hence `00`–`05`, which must be certified with the ACL2(r) executable); a separate top because `06-...-acl2r` re-declares the names of `00`–`05` |
+| `top-acl2r-ftc2.lisp` | — | Includes `10` (and hence `08`); a separate top so that the long first-time certification of the `nonstd/integrals` books is opt-in |
 
 **On `06-generic-omega-collapse{,-acl2r}.lisp`:** these are *not* a
 dependency of `04-collapse-lemma.lisp`'s result — that book already
@@ -90,7 +92,8 @@ only where explicitly invoked below). To stay honest about that:
   term is machine-derived via an automatic differentiator) but does
   **not** complete the integral — its header comment documents exactly
   which ACL2/`arithmetic-5` obstacles stopped it, rather than
-  simulating a finished proof.
+  simulating a finished proof. **`10-inductance-ftc2.lisp` later completes
+  it** (see the table above).
 - Equation (40) — the torque formula as stated in Leonhard's book — is
   taken as a *given* starting point (as the paper itself does); this
   repository does not have independent access to Leonhard's text and
@@ -127,6 +130,7 @@ mathematical fact ACL2 cannot itself derive."
 export ACL2=/path/to/saved_acl2r
 cert.pl --acl2 "$ACL2" top        # 00-07, the main chain
 cert.pl --acl2 "$ACL2" top-acl2r  # the two ACL2(r)-only extensions
+cert.pl --acl2 "$ACL2" top-acl2r-ftc2  # the inductance integral via FTC-2 (first run also certifies nonstd/integrals/ftc-2, ~2 min)
 ```
 
 Each certifies its own book and, transitively, everything it depends
